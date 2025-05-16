@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiFilm - Free Movies & TV Shows</title>
+    <link rel="shortcut icon" href="images/Website Icon.png" type="image/x-icon">
+    <meta name="description" content="Free Movies & TV Shows at WikiFilm!">
+    <style>
+        @font-face {
+    font-family: 'MainFont';
+    src: url('fonts/fonts/Tagesschrift/Tagesschrift-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+        /* Modern Netflix-inspired CSS */
+        :root {
+            --primary: #e50914;
+            --dark: #141414;
+            --light: #f5f5f5;
+            --gray: #808080;
+            --dark-gray: #2a2a2a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            font-family: 'MainFont';
+        }
+        
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            transition: background 0.3s;
+        }
+        .navbar_mob{
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            transition: background 0.3s;
+        }
+        .navbar.scrolled {
+            background: var(--dark);
+
+        }
+        
+        .navbar_mob.scrolled {
+            background: var(--dark);
+            
+        }
+        
+        .logo {
+            color: var(--primary);
+            font-size: 2.4rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .logo span {
+            color: var(--light);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+            font-weight: bold;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: url(https://i0.wp.com/www.ttuhub.net/wp-content/uploads/2014/10/Breaking-Bad.jpg);
+            display: flex;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            align-items: center;
+            padding: 0 5%;
+            font-family: 'MainFont', sans-serif;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 15px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #f40612;
+        }
+        
+        .btn-secondary {
+            background-color: rgba(109, 109, 110, 0.7);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(109, 109, 110, 0.9);
+        }
+        
+        /* Content Sections */
+        .section {
+            padding: 0 5%;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .content-row {
+            display: flex;
+            overflow-y: scroll;
+            gap: 10px;
+            padding: 10px 0;
+        }
+        
+        .content-row::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+        
+        .content-card {
+            width: 250px;
+            height: 360px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .content-card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        
+        .content-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .content-card:hover .card-overlay {
+            opacity: 1;
+        }
+        
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .card-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .card-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .card-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+        
+        /* Features Section */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            padding: 3rem 5%;
+            background-color: var(--dark-gray);
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-desc {
+            color: var(--gray);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            padding: 2rem 5%;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 5%;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .content-card {
+                min-width: 150px;
+                height: 300px;
+            }
+        }
+        .GetReady{
+            padding: 10px;
+            border: none;
+            outline: none;
+            background-color: #f40612;
+            color: white;
+            border-radius: 10px;
+
+            font-weight: bold;
+        }
+
+        
+        
+        .nav-links-mob {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: #1a1a1a;
+            padding: 10px 0;
+            z-index: 1000;
+            height: 100vh;
+        }
+        
+        .nav-links-mob.active {
+            display: flex;
+            
+        }
+        
+        .nav-links-mob a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-links-mob a:hover {
+            background-color: #333;
+        }
+        
+        .nav-links-mob i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        @media (min-width: 768px) {
+            .menu-toggle {
+                display: none;
+            }
+            
+            .nav-links-mob {
+                display: flex;
+                flex-direction: row;
+                position: static;
+                width: auto;
+                background-color: transparent;
+                padding: 0;
+            }
+            
+            .nav-links-mob a {
+                padding: 5px 15px;
+            }
+            
+        }
+                @media (max-width: 1000px) {
+                    .navbar_mob{
+                        display: flex;
+                    }
+                    .navbar{
+                        display: none;
+                    }
+        }
+    </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">Wiki<span>Film</span></div>
+        <div class="nav-links">
+            <a href="#"><i class="fas fa-home"></i> Home</a>
+            <a href="#"><i class="fas fa-film"></i> Movies</a>
+            <a href="#"><i class="fas fa-tv"></i> TV Series</a>
+            <a href="#"><i class="fas fa-search"></i> Browse</a>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+        <nav class="navbar_mob">
+        <div class="logo">Wiki<span>Film</span></div>
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="nav-links-mob" id="navLinks">
+            <a href="#"><i class="fas fa-home"></i> Home</a>
+            <a href="#"><i class="fas fa-film"></i> Movies</a>
+            <a href="#"><i class="fas fa-tv"></i> TV Series</a>
+            <a href="#"><i class="fas fa-search"></i> Browse</a>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Unlimited Entertainment, Absolutely Free</h1>
+            <p>Stream thousands of movies and TV series without subscriptions or hidden fees.</p>
+            <button class="btn btn-primary">Start Watching</button>
+            <button class="btn btn-secondary">Browse Library</button>
+        </div>
+    </section>
+
+    <!-- Content Sections -->
+    <div class="section">
+        <h2 class="section-title"><i class="fas fa-star" style="color: #e50914;"></i> Popular on <span style="color: #e50914;">Wiki</span>film <span style="color: #e50914;">:</span></h2>
+        <div class="content-row">
+
+
+
+
+            <div class="content-card">
+                <img src="https://www.afpp.eu/wp-content/uploads/2020/04/screenshot_2023_08_30_at_16_21_31_ems_3jpg_webp_image_1400_2100_pixels_scaled_35.webp" alt="Movie">
+                <div class="card-overlay">
+                    <div class="card-title">Breaking Bad</div>
+                    <div class="card-meta">
+                        <span>2008</span>
+                        <span>TV Series</span>
+                        <span>★ 9.5</span>
+                        <span>Seasons 5</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-btn"><i class="fas fa-play"></i></button>
+                        <button class="card-btn"><i class="fas fa-info"></i></button>
+                    </div>
+                </div>
+            </div>
+           
+
+
+
+
+
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title"><i class="fas fa-arrow-up" style="color: #e50914;"></i> Trending Now <span style="color: #e50914;">:</span></h2>
+        <div class="content-row">
+
+            
+            <!-- Repeat similar cards with different images/titles -->
+          
+            <div class="content-card">
+                <img src="https://www.afpp.eu/wp-content/uploads/2020/04/screenshot_2023_08_30_at_16_21_31_ems_3jpg_webp_image_1400_2100_pixels_scaled_35.webp" alt="Movie">
+                <div class="card-overlay">
+                    <div class="card-title">Breaking Bad</div>
+                    <div class="card-meta">
+                        <span>2008</span>
+                        <span>TV Series</span>
+                        <span>★ 9.5</span>
+                        <span>Seasons 5</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-btn"><i class="fas fa-play"></i></button>
+                        <button class="card-btn"><i class="fas fa-info"></i></button>
+                   </div>
+                </div>
+            </div>
+           
+
+
+
+
+            
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title"><i class="fas fa-history" style="color: #e50914;"></i> New Releases <span style="color: #e50914;">:</span></h2>
+        <div class="content-row">
+           
+
+
+
+            <div class="content-card">
+                <img src="https://www.afpp.eu/wp-content/uploads/2020/04/screenshot_2023_08_30_at_16_21_31_ems_3jpg_webp_image_1400_2100_pixels_scaled_35.webp" alt="Movie">
+                <div class="card-overlay">
+                    <div class="card-title">Breaking Bad</div>
+                    <div class="card-meta">
+                        <span>2008</span>
+                        <span>TV Series</span>
+                        <span>★ 9.5</span>
+                        <span>Seasons 5</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-btn"><i class="fas fa-play"></i></button>
+                        <button class="card-btn"><i class="fas fa-info"></i></button>
+                    </div>
+                </div>
+            </div>
+           
+
+
+
+
+
+        </div>
+    </div>
+<br><br>
+    <!-- Features Section 
+    <section class="features">
+        <div class="feature-card">
+            <div class="feature-icon">🎬</div>
+            <h3 class="feature-title">No Subscription</h3>
+            <p class="feature-desc">Watch everything for free - no credit card required.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3 class="feature-title">Watch Anywhere</h3>
+            <p class="feature-desc">Stream on all your devices, anytime, anywhere.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🌟</div>
+            <h3 class="feature-title">Premium Content</h3>
+            <p class="feature-desc">High-quality movies and shows without the premium price.</p>
+        </div>
+    </section> -->
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Contact</a>
+            <a href="#">FAQ</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+        <p class="copyright">© 2024 Wikifilm. All content is provided for demonstration purposes only.</p>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar_mob');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Card click events
+        document.querySelectorAll('.content-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('card-btn')) {
+                    const title = this.querySelector('.card-title').textContent;
+                    alert(`Now playing: ${title} (demo)`);
+                }
+            });
+        });
+        
+        // Button click events
+        document.querySelectorAll('.btn-primary').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert("Start watching now! (This is a demo)");
+            });
+        });
+    </script>
+     <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            // Change icon between bars and times
+            const icon = menuToggle.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    </script>
+</body>
+</html>
