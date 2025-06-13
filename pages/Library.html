@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library - WikiFilm</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--dark);
+            color: var(--light);
+        }
+        
+        :root {
+            --primary: #e50914;
+            --dark: #141414;
+            --light: #f5f5f5;
+            --gray: #808080;
+            --dark-gray: #2a2a2a;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        #searchInput {
+            width: 60%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            background-color: var(--dark-gray);
+            color: var(--light);
+            transition: all 0.3s;
+        }
+        
+        #searchInput::placeholder {
+            color: var(--gray);
+        }
+        
+        #searchInput:focus {
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+          footer {
+            padding: 2rem 5%;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            background-color: var(--dark-gray);
+            border: none;
+            border-radius: 4px;
+            color: var(--light);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .filter-btn:hover {
+            background-color: var(--gray);
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .media-card {
+            background-color: var(--dark-gray);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        
+        .media-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        .media-poster {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .media-info {
+            padding: 15px;
+        }
+        
+        .media-title {
+            margin: 0;
+            font-size: 16px;
+            color: var(--light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .media-type {
+            display: inline-block;
+            padding: 3px 8px;
+            margin-top: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .type-film {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .type-tv {
+            background-color: #0071eb;
+            color: white;
+        }
+        
+        .media-year {
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .watch-btn {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .watch-btn:hover {
+            background-color: #f40612;
+        }
+        
+        .no-results {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 40px;
+            color: var(--gray);
+        }
+        
+        @media (max-width: 768px) {
+            .library-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            #searchInput {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>© <span style="color: white;">Wiki</span>Film</h1>
+        <h2 style="text-align: center;">Watch anything with a high-quality for free!</h2>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for films or TV shows...">
+        </div>
+        
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="film">Films</button>
+            <button class="filter-btn" data-filter="tv">TV Shows</button>
+        </div>
+        
+        <div class="library-grid" id="libraryGrid">
+            <!-- Media items will be inserted here by JavaScript -->
+        </div>
+        
+<br><br>
+    <footer>
+        <div class="footer-links">
+            <a href="../index.html">Home</a>
+            <a href="#">About Us</a>
+            <a href="#">Contact</a>
+            <a href="#">FAQ</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+        <p class="copyright">© 2024 Wikifilm. All content is provided for demonstration purposes only.</p>
+    </footer>
+    </div>
+
+    <script>
+        // Sample media data with watch links
+        const mediaLibrary = [
+            {
+                title: "The Shawshank Redemption",
+                type: "film",
+                year: 1994,
+                poster: "https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_.jpg",
+                watchLink: "https://www.netflix.com/title/70005379"
+            },
+            {
+                title: "Breaking Bad",
+                type: "tv",
+                year: 2008,
+                poster: "https://m.media-amazon.com/images/M/MV5BYmQ4YWMxYjUtNjZmYi00MDQ1LWFjMjMtNjA5ZDdiYjdiODU5XkEyXkFqcGdeQXVyMTMzNDExODE5._V1_.jpg",
+                watchLink: "https://www.netflix.com/title/70143836"
+            },
+            {
+                title: "Inception",
+                type: "film",
+                year: 2010,
+                poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg",
+                watchLink: "https://www.netflix.com/title/70131314"
+            },
+            {
+                title: "Stranger Things",
+                type: "tv",
+                year: 2016,
+                poster: "https://m.media-amazon.com/images/M/MV5BMDZkYmVhNjMtNWU4MC00MDQxLWE3MjYtZGMzZWI1ZjhlOWJmXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg",
+                watchLink: "https://www.netflix.com/title/80057281"
+            },
+            {
+                title: "The Dark Knight",
+                type: "film",
+                year: 2008,
+                poster: "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg",
+                watchLink: "https://www.netflix.com/title/70079583"
+            },
+            {
+                title: "Game of Thrones",
+                type: "tv",
+                year: 2011,
+                poster: "https://m.media-amazon.com/images/M/MV5BYTRiNDQwYzAtMzVlZS00NTI5LWJjYjUtMzkwNTUzMWMxZTllXkEyXkFqcGdeQXVyNDIzMzcwNjc@._V1_.jpg",
+                watchLink: "https://www.hbo.com/game-of-thrones"
+            },
+            {
+                title: "Pulp Fiction",
+                type: "film",
+                year: 1994,
+                poster: "https://m.media-amazon.com/images/M/MV5BNGNhMDIzZTUtNTBlZi00MTRlLWFjM2ItYzViMjE3YzI5MjljXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg",
+                watchLink: "https://www.netflix.com/title/60000929"
+            },
+            {
+                title: "The Mandalorian",
+                type: "tv",
+                year: 2019,
+                poster: "https://m.media-amazon.com/images/M/MV5BZDhlMzY0ZGItZTcyNS00ZTAxLWIyMmYtZGQ2ODg5OWZiYmJkXkEyXkFqcGdeQXVyODkzNTgxMDg@._V1_.jpg",
+                watchLink: "https://www.disneyplus.com/series/the-mandalorian/3jLIGMDYINqD"
+            }
+        ];
+
+        // DOM elements
+        const libraryGrid = document.getElementById('libraryGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        // Current filter
+        let currentFilter = 'all';
+        
+        // Display media items
+        function displayMedia(media) {
+            libraryGrid.innerHTML = '';
+            
+            if (media.length === 0) {
+                libraryGrid.innerHTML = '<div class="no-results">No results found</div>';
+                return;
+            }
+            
+            media.forEach(item => {
+                const mediaCard = document.createElement('div');
+                mediaCard.className = 'media-card';
+                
+                mediaCard.innerHTML = `
+                    <img src="${item.poster}" alt="${item.title}" class="media-poster">
+                    <div class="media-info">
+                        <h3 class="media-title">${item.title}</h3>
+                        <span class="media-type ${item.type === 'film' ? 'type-film' : 'type-tv'}">
+                            ${item.type === 'film' ? 'Film' : 'TV Show'}
+                        </span>
+                        <p class="media-year">${item.year}</p>
+                        <a href="${item.watchLink}" target="_blank" class="watch-btn">Watch Now</a>
+                    </div>
+                `;
+                
+                libraryGrid.appendChild(mediaCard);
+            });
+        }
+        
+        // Filter and search media
+        function filterMedia() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            let filteredMedia = mediaLibrary.filter(item => {
+                const matchesSearch = item.title.toLowerCase().includes(searchTerm);
+                const matchesFilter = currentFilter === 'all' || item.type === currentFilter;
+                return matchesSearch && matchesFilter;
+            });
+            
+            displayMedia(filteredMedia);
+        }
+        
+        // Event listeners
+        searchInput.addEventListener('input', filterMedia);
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                currentFilter = button.dataset.filter;
+                filterMedia();
+            });
+        });
+        
+        // Initial display
+        displayMedia(mediaLibrary);
+    </script>
+</body>
+</html>
