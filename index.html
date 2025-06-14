@@ -84,11 +84,28 @@ backdrop-filter: blur(20px);
         }
         
         .navbar_mob.scrolled {
+
 background-color: rgba(0, 0, 0, 0.2);
-backdrop-filter: blur(20px);   
-         
+backdrop-filter: blur(20px);
+/* Blur effect that fades at the bottom */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  /* Gradient mask to fade out the bottom edge */
+  mask-image: linear-gradient(
+    to bottom,
+    black calc(100% - 20px),
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black calc(100% - 20px),
+    transparent
+  );
+  
+  z-index: 1000;
         }
-        
+                
         .logo {
             color: var(--primary);
             font-size: 2.4rem;
@@ -395,12 +412,6 @@ backdrop-filter: blur(20px);
   transition: transform 0.3s ease;
 }
 
-/* Optional hover effect */
- .logo-link:hover .navbar-logo {
-  transform: scale(1.05);
-}
-
-
 
         
         .navbar-logo {
@@ -408,22 +419,7 @@ backdrop-filter: blur(20px);
   transition: all 0.3s ease;
 }
 
-/* Hover effects */
-.logo-link:hover .navbar-logo {
-  transform: scale(1.1);
-  opacity: 0.9;
-}
 
-/* Alternative: Add subtle animation */
-@keyframes logoPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-.logo-link:hover .navbar-logo {
-  animation: logoPulse 0.5s ease;
-}
     </style>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
