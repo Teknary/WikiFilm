@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library - WikiFilm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="shortcut icon" href="../images/wikifilm-high-resolution-logo-transparent (1).png" type="image/x-icon">
     <style>
         * {
             box-sizing: border-box;
@@ -218,12 +220,41 @@
                 width: 80%;
             }
         }
+
+        .navlinks a{
+            text-decoration: none;
+            color: white;
+            margin: 5px;
+            font-weight: bold;
+        }
+        .navlinks a:hover{
+            color: #808080;
+            text-decoration:underline;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>© <span style="color: white;">Wiki</span>Film</h1>
-        <h2 style="text-align: center;">Watch anything with a high-quality for free!</h2>
+<div class="container" style="display: flex; justify-content: center; align-items: center;">
+   <div class="logo">
+      <a href="/" class="logo-link">
+         <img src="../images/wikifilm-high-resolution-logo-transparent.png" 
+              alt="Company Logo" 
+              class="navbar-logo" 
+              style="width: 320px; height: auto;">
+      </a>
+   </div>
+</div> 
+  
+<div class="navlinks" style="text-align: center;justify-content: center;align-content: center;align-items: center;">
+    <a href="../index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="contact.html">Contact</a>
+    <a href="feedback.html">Feedback</a>
+    <a href=""></a>
+</div>
+
+  <h2 style="text-align: center;">Watch anything with a high-quality for free!</h2>
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search for films or TV shows...">
         </div>
@@ -342,7 +373,7 @@
                             ${item.type === 'film' ? 'Film' : 'TV Show'}
                         </span>
                         <p class="media-year">${item.year}</p>
-                        <a href="${item.watchLink}" target="_blank" class="watch-btn">Watch Now</a>
+                        <a href="${item.watchLink}" target="_blank" class="watch-btn"><i class="fas fa-watch"></i> Watch Now</a>
                     </div>
                 `;
                 
